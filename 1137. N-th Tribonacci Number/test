@@ -1,0 +1,8 @@
+#!/bin/bash
+../push
+gcc main.c main.h func.c -o main
+echo ""
+echo "OUTPUT:----------------------------"
+echo ""
+clear
+./main.exe
