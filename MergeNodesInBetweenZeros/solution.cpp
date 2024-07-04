@@ -29,12 +29,6 @@ public:
         }
         lastInPlace->next = NULL;
 
-        // ListNode *tmp = lastInplace->next;
-
-        // while (tmp) {
-
-        // }
-
         return head;
     }
 };
