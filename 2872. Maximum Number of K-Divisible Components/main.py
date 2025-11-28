@@ -1,11 +1,8 @@
-from typing import Dict, List, Number
+from typing import Dict, List
 
 class Solution:
     def maxKDivisibleComponents(self, n: int, edges: List[List[int]], values: List[int], k: int) -> int:
 
-        # if sum(values) == 0:
-            # return len(edges) + 1
-        
         graph: Dict[Number, List[Number]] = {}
         result: Number = 1
 
@@ -38,4 +35,11 @@ class Solution:
                 result += 1
 
         return result
-        
+       
+if __name__ == "__main__":
+    s = Solution()
+
+    result = s.maxKDivisibleComponents(7, [[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]], [3,0,6,1,5,2,1], 3)
+    print("res => ", result)
+
+
