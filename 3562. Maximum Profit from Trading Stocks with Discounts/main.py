@@ -4,34 +4,37 @@
 [2]
 """
 import math
+import copy
 
 class Solution:
     tree = {}
     future = []
     present = []
 
-    def calc_tree_profit(self, present_price:int, curr_node:int, budget:int, local_profits:List[int], depth=0):
-        if present_price > budget:
+    def calc_tree_profit(self, present_price:int, curr_node:int, budget:List[int], local_profits:List[int], depth=0):
+        if present_price > budget[depth]:
             return
 
-        # print(depth * '\t', '|->',  curr_node, end=', ')
-        # print(f"budget: {budget}", end=', ')
-        # print(f"present price: {present_price}", end=', ')
+        print(depth * '\t', '|->',  curr_node, end=', ')
+        print(f"budget: {budget}", end=', ')
+        print(f"present price: {present_price}", end=', ')
 
         profit = (self.future[curr_node - 1] - present_price)
-        # print(f"profit: {self.future[curr_node - 1]} - {present_price} = {profit}")
+        print(f"profit: {self.future[curr_node - 1]} - {present_price} = {profit}")
 
-        if len(local_profits) == 0 or (len(local_profits) - 1) < depth:
+        if depth >= len(local_profits) or present_price < budget[-1]:
             local_profits.append(profit)
-        elif local_profits[depth] < profit:
+        elif present_price <= budget[depth]:
             local_profits[depth] = profit
+
+        budget.append(budget[-1] - present_price)
 
         existing_node = self.tree.get(curr_node)
         if existing_node is None:
             return
         for node in existing_node:
             node_present_price = math.floor(self.present[node - 1] / 2)
-            self.calc_tree_profit(node_present_price, node, budget - present_price, local_profits, depth + 1)
+            self.calc_tree_profit(node_present_price, node, budget, local_profits, depth + 1)
 
 
     def maxProfit(self, n: int, present: List[int], future: List[int], hierarchy: List[List[int]], budget: int) -> int:
@@ -42,6 +45,7 @@ class Solution:
 
         if n == 0: return 0
         if n == 1:
+            if present[0] > budget: return 0
             profit = future[0] - present[0]
             return profit if profit >= 0 else 0
 
@@ -55,11 +59,17 @@ class Solution:
                 self.tree[pair[1]] = []
 
         for node, subs in self.tree.items():
+            if present[node - 1] <= budget:
+                parent_only_profit = future[node - 1] - present[node - 1]
+                profits.append(parent_only_profit)
             local_profits = []
-            self.calc_tree_profit(self.present[node - 1], node, budget, local_profits)
+            self.calc_tree_profit(self.present[node - 1], node, [budget], local_profits)
             profits.append(sum(local_profits))
+            print(f"local profits: {local_profits}")
 
-        # print(profits)
+        print(profits)
 
-        return max(profits) if len(profits) > 0 else 0
+        max_profit = max(profits) if len(profits) > 0 else 0
+
+        return max_profit if max_profit > 0 else 0
  
